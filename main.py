@@ -1,0 +1,3 @@
+import scout
+
+scout.start()

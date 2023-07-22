@@ -1,43 +1,45 @@
 import pvporcupine
-import pvleopard
+from threading import Thread
+from pvleopard import create, LeopardActivationLimitError
+from pvrecorder import PvRecorder
 import openai
 from elevenlabs import generate, play, set_api_key
 import os
 
-class Scout:
-    def __init__(self):
+class Scout(Thread):
+    def __init__(self, audio_device_index):
+        super().__init__()
+        self._audio_device_index = audio_device_index
         eleven_labs_api_key= os.environ["ELEVEN_LABS_API_KEY"]
         set_api_key(eleven_labs_api_key)
         openai.api_key = os.environ["OPENAI_API_KEY"]
         porcupine_access_key = os.environ["PORCUPINE_ACCESS_KEY"]
         voice_name= "roboBrit"
-    
-    def get_next_audio_frame():
-        pass
 
-    def wake_up(self):
+    def start(self):
         scout = pvporcupine.create(
             access_key=self.porcupine_access_key,
             keywords=['scout']
         )
         while True:
-            audio_frame = self.get_next_audio_frame()
-            keyword_index = scout.process(audio_frame)
-            if keyword_index == 0:
+            recorder = PvRecorder(frame_length=scout.frame_length, device_index=self._audio_device_index)
+            recorder.start()
+            pcm = recorder.read()
+            result = scout.process(pcm)
+            if result >= 0:
                 human = self.get_human_response()
                 ai = self.get_ai_response(human)
                 self.get_voice(ai)
 
 
-    def get_human_response(self, audio_path):
-        
-        leopard = pvleopard.create(access_key='${ACCESS_KEY}')
-
-        transcript, words = leopard.process_file(audio_path)
-        for word in words:
-            print(
-            "{word=\"%s\" start_sec=%.2f end_sec=%.2f confidence=%.2f}"
-            % (word.word, word.start_sec, word.end_sec, word.confidence))
+    def get_human_response(self, recorder):
+        leopard = create(access_key='${ACCESS_KEY}')
+        try:
+            human_request, words = leopard.process(recorder.stop())
+            transcript = human_request
+        except LeopardActivationLimitError:
+                human_request = 'AccessKey has reached its processing limit.'
+    
         return transcript
 
     def get_ai_response(self, input):
