@@ -1,3 +1,9 @@
-import scout
+from scout import Scout
 
-scout.start()
+def main():
+    scout = Scout(voice_name="roboBrit")
+    scout.start()
+
+
+if __name__ == "__main__":
+    main()
