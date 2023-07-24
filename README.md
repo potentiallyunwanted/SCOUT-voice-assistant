@@ -21,7 +21,7 @@ pip install -r requirements.txt
 Set up your environment variables for the ElevenLabs and OpenAI API keys. In a Linux system, you can do this by adding the following lines to your .bashrc or .bash_profile:
 
 ```bash
-export ELEVEN_LABS_API_KEY='your_eleven_labs_api_key_here'
+export ELEVENLABS_API_KEY='your_eleven_labs_api_key_here'
 export OPENAI_API_KEY='your_openai_api_key_here'
 ```
 
