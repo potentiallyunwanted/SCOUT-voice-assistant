@@ -6,15 +6,10 @@ Scout is a voice assistant designed to help you interact with your device hands-
 
 Before you can run Scout, you will need to install a few prerequisites.
 
-    Clone this repository to your local machine.
+Clone this repository to your local machine.
 
 ```bash
 git clone https://github.com/yourusername/scout.git
-```
- Make sure you have Python 3.6 or above installed.
-
-```bash
-python --version
 ```
 
 Install the required Python libraries.
